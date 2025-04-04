@@ -11,8 +11,8 @@ export class AlertComponent implements OnInit, OnDestroy {
     @Input() fade = true;
 
     alerts: Alert[] = [];
-    alertSubscription: Subscription;
-    routeSubscription: Subscription;
+    alertSubscription: Subscription | null = null;  
+    routeSubscription: Subscription | null = null; 
 
     constructor(private router: Router, private alertService: AlertService) { }
 
@@ -25,7 +25,7 @@ export class AlertComponent implements OnInit, OnDestroy {
                     // filter out alerts without 'keepAfterRouteChange' flag
                     this.alerts = this.alerts.filter(x => x.keepAfterRouteChange);
 
-                    // remove 'keepAfterRouteChange' flag on the rest
+               
                     this.alerts.forEach(x => delete x.keepAfterRouteChange);
                     return;
                 }
@@ -49,8 +49,8 @@ export class AlertComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         // unsubscribe to avoid memory leaks
-        this.alertSubscription.unsubscribe();
-        this.routeSubscription.unsubscribe();
+        if (this.alertSubscription) this.alertSubscription.unsubscribe();
+        if (this.routeSubscription) this.routeSubscription.unsubscribe();
     }
 
     removeAlert(alert: Alert) {
