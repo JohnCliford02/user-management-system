@@ -17,7 +17,7 @@ export class ResetPasswordComponent implements OnInit {
     TokenStatus = TokenStatus;
     tokenStatus = TokenStatus.Validating;
     token = null;
-    form: UntypedFormGroup;
+    form!: UntypedFormGroup;
     loading = false;
     submitted = false;
 
@@ -45,13 +45,12 @@ export class ResetPasswordComponent implements OnInit {
         this.accountService.validateResetToken(token)
         .pipe(first())
         .subscribe({
-            nexxt: () => {
+            next: () => {
                 this.token = token;
                 this.tokenStatus = TokenStatus.Valid;
             },
             error: () => {
                 this.tokenStatus = TokenStatus.Invalid;
-            }
             }
         });
     }
@@ -59,4 +58,30 @@ export class ResetPasswordComponent implements OnInit {
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
+    onSubmit() {
+        this.submitted = true;
+
+        // reset alerts on submit
+        this.alertService.clear();
+
+        //stop here if form is invalid
+        if (this.form.invalid) {
+            return;
+        }
+
+        this.loading = true;
+        this.accountService.resetPassword(this.token || '', this.f['password'].value, this.f['confirmPassword'].value)
+
+        .pipe(first())
+        .subscribe({
+            next: () => {
+                this.alertService.success('Password reset successful, you can now login', { keepAfterRouteChange: true});
+                this.router.navigate(['../login'], { relativeTo: this.route });
+            },
+            error: error => {
+                this.alertService.error(error)
+                this.loading = false;
+            }
+        });
+    }
 }

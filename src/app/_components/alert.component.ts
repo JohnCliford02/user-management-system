@@ -11,8 +11,8 @@ export class AlertComponent implements OnInit, OnDestroy {
     @Input() fade = true;
 
     alerts: Alert[] = [];
-    alertSubscription: Subscription | null = null;  
-    routeSubscription: Subscription | null = null; 
+    alertSubscription!: Subscription; 
+    routeSubscription!: Subscription;
 
     constructor(private router: Router, private alertService: AlertService) { }
 
@@ -49,8 +49,8 @@ export class AlertComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         // unsubscribe to avoid memory leaks
-        if (this.alertSubscription) this.alertSubscription.unsubscribe();
-        if (this.routeSubscription) this.routeSubscription.unsubscribe();
+        this.alertSubscription?.unsubscribe();
+        this.routeSubscription?.unsubscribe();
     }
 
     removeAlert(alert: Alert) {
