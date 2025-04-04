@@ -9,7 +9,7 @@ import { MustMatch } from '@app/_helpers';
 @Component({ templateUrl: 'update.component.html' })
 export class UpdateComponent implements OnInit {
     account = this.accountService.accountValue;
-    form: UntypedFormGroup;
+    form!: UntypedFormGroup;
     loading = false;
     submitted = false;
     deleting = false;
