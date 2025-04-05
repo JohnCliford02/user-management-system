@@ -8,7 +8,7 @@ import { MustMatch } from '@app/_helpers';
 
 @Component({ templateUrl: 'update.component.html' })
 export class UpdateComponent implements OnInit {
-    account = this.accountService.accountValue;
+    account: any;
     form!: UntypedFormGroup;
     loading = false;
     submitted = false;
@@ -23,6 +23,10 @@ export class UpdateComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        // Initialize the account value here, after the service is injected
+        this.account = this.accountService.accountValue;
+
+        // Initialize the form with the account data
         this.form = this.formBuilder.group({
             title: [this.account.title, Validators.required],
             firstName: [this.account.firstName, Validators.required],
@@ -35,20 +39,20 @@ export class UpdateComponent implements OnInit {
         });
     }
 
-    // convenience getter for easy access to form fields
+    // Convenience getter for easy access to form fields
     get f() { return this.form.controls; }
-    
+
     onSubmit() {
         this.submitted = true;
-    
-        // reset alerts on submit
+
+        // Reset alerts on submit
         this.alertService.clear();
-    
-        // stop here if form is invalid
+
+        // Stop here if the form is invalid
         if (this.form.invalid) {
             return;
         }
-    
+
         this.loading = true;
         this.accountService.update(this.account.id, this.form.value)
             .pipe(first())
@@ -63,7 +67,7 @@ export class UpdateComponent implements OnInit {
                 }
             });
     }
-    
+
     onDelete() {
         if (confirm('Are you sure?')) {
             this.deleting = true;
@@ -71,7 +75,8 @@ export class UpdateComponent implements OnInit {
                 .pipe(first())
                 .subscribe(() => {
                     this.alertService.success('Account deleted successfully', { keepAfterRouteChange: true });
+                    // Redirect or perform further actions if needed
                 });
         }
-    }    
+    }
 }

@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "./tsconfig.base.json",  // Make sure you extend only the base config
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
     "strict": true,
