@@ -45,7 +45,7 @@ async function authenticate(email, password, ipAddress) {
   async function refreshToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
     const account = await refreshToken.getAccount();
-  
+
     const newRefreshToken = generateRefreshToken(account, ipAddress);
     refreshToken.revoked = Date.now();
     refreshToken.revokedByIp = ipAddress;
@@ -74,26 +74,30 @@ async function authenticate(email, password, ipAddress) {
     if (await db.Account.findOne({ where: { email: params.email } })) {
       return await sendAlreadyRegisteredEmail(params.email, origin);
     }
-  
+
     const account = new db.Account(params);
-  
+
     const isFirstAccount = (await db.Account.count()) === 0;
     account.role = isFirstAccount ? Role.Admin : Role.User;
     account.verificationToken = randomTokenString();
-  
+
     account.passwordHash = await hash(params.password);
-  
+
     await account.save();
-  
+
     await sendVerificationEmail(account, origin);
-  }
+    // Do not send verification email
+    // await sendVerificationEmail(account, origin);
+}
 
   async function verifyEmail({ token }) {
-    const account = await db.Account.findOne({ where: { verificationToken: token } });
+    const account = await db.Account.findOne({ where: { verificationToken: {[Op.ne]: null },
+      verified: null
+  }});
   
     if (!account) throw 'Verification failed';
   
-    account.verified = Date.now();
+    account.verified = new Date();
     account.verificationToken = null;
     await account.save();
   }

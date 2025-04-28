@@ -12,7 +12,7 @@ function model(sequelize) {
         acceptTerms: { type: DataTypes.BOOLEAN },
         role: { type: DataTypes.STRING, allowNull: false },
         verificationToken: { type: DataTypes.STRING },
-        verified: { type: DataTypes.DATE },
+        verified: { type: DataTypes.DATE, allowNull: true },
         resetToken: { type: DataTypes.STRING },
         resetTokenExpires: { type: DataTypes.DATE },
         passwordReset: { type: DataTypes.DATE },
