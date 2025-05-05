@@ -86,18 +86,13 @@ async function authenticate(email, password, ipAddress) {
     await account.save();
 
     await sendVerificationEmail(account, origin);
-    // Do not send verification email
-    // await sendVerificationEmail(account, origin);
 }
-
   async function verifyEmail({ token }) {
-    const account = await db.Account.findOne({ where: { verificationToken: {[Op.ne]: null },
-      verified: null
-  }});
+    const account = await db.Account.findOne({ where: { verificationToken: token }});
   
     if (!account) throw 'Verification failed';
   
-    account.verified = new Date();
+    account.verified = Date.now();
     account.verificationToken = null;
     await account.save();
   }

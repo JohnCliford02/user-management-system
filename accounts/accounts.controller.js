@@ -154,6 +154,10 @@ function authenticateSchema(req, res, next) {
   }
 
   function getById(req, res, next) {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized: User not found in request' });
+    }
+  
     if (Number(req.params.id) !== req.user.id && req.user.role !== Role.Admin) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -162,6 +166,7 @@ function authenticateSchema(req, res, next) {
       .then(account => account ? res.json(account) : res.sendStatus(404))
       .catch(next);
   }
+  
   
   function createSchema(req, res, next) {
     const schema = Joi.object({
